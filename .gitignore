@@ -1,0 +1,20 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local-only artifacts (not part of the published site)
+deploy.sh
+screenshots/
+*.log
+.env
+.env.*
+node_modules/

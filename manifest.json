@@ -1,0 +1,13 @@
+{
+  "name": "千词斩 · 生字复习",
+  "short_name": "千词斩",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#b8e0ff",
+  "theme_color": "#3b82f6",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "./assets/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
