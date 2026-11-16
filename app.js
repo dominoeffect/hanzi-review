@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-8";
+const APP_VERSION = "v2026.11.16-9";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -510,40 +510,97 @@ function icon(name, active) {
   return icons[name];
 }
 
-function pandaSVG() {
-  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <ellipse cx="100" cy="176" rx="48" ry="10" fill="rgba(30,80,160,0.12)"/>
-    <ellipse cx="100" cy="128" rx="58" ry="50" fill="#f7f8fb" stroke="#1a1a1a" stroke-width="3"/>
-    <ellipse cx="100" cy="128" rx="58" ry="50" fill="#fff"/>
-    <path d="M70 150c10 16 50 16 60 0" fill="none" stroke="#1a1a1a" stroke-width="3"/>
-    <!-- arms -->
-    <ellipse cx="48" cy="128" rx="16" ry="22" fill="#1a1a1a" transform="rotate(-18 48 128)"/>
-    <ellipse cx="152" cy="122" rx="16" ry="22" fill="#1a1a1a" transform="rotate(28 152 122)"/>
-    <!-- pencil -->
-    <g transform="translate(150 78) rotate(28)">
-      <rect x="0" y="0" width="10" height="58" rx="2" fill="#f5c451"/>
-      <rect x="0" y="0" width="10" height="10" fill="#ff6b6b"/>
-      <polygon points="0,58 10,58 5,70" fill="#e8c9a0"/>
-      <polygon points="3.5,66 6.5,66 5,70" fill="#333"/>
+function mascotSVG() {
+  return `<svg class="mascot" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="mascotTile" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#eaf3ff"/>
+      </linearGradient>
+      <linearGradient id="mascotRim" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#93c5fd"/>
+        <stop offset="1" stop-color="#3b82f6"/>
+      </linearGradient>
+      <linearGradient id="mascotZi" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3b82f6"/>
+        <stop offset="1" stop-color="#1e40af"/>
+      </linearGradient>
+      <linearGradient id="mascotArm" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#7dd3fc"/>
+        <stop offset="1" stop-color="#3b82f6"/>
+      </linearGradient>
+      <linearGradient id="mascotPencil" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fde68a"/>
+        <stop offset="0.5" stop-color="#fbbf24"/>
+        <stop offset="1" stop-color="#f59e0b"/>
+      </linearGradient>
+      <radialGradient id="mascotIris" cx="32%" cy="30%" r="70%">
+        <stop offset="0" stop-color="#60a5fa"/>
+        <stop offset="0.45" stop-color="#1d4ed8"/>
+        <stop offset="1" stop-color="#1e3a8a"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="100" cy="188" rx="44" ry="7" fill="rgba(30,80,160,0.16)"/>
+    <g class="mascot-body">
+      <ellipse cx="76" cy="168" rx="16" ry="8" fill="#1d4ed8"/>
+      <ellipse cx="76" cy="166" rx="16" ry="7" fill="#60a5fa"/>
+      <ellipse cx="124" cy="168" rx="16" ry="8" fill="#1d4ed8"/>
+      <ellipse cx="124" cy="166" rx="16" ry="7" fill="#60a5fa"/>
+      <rect x="46" y="32" width="108" height="128" rx="32" fill="url(#mascotTile)" stroke="url(#mascotRim)" stroke-width="3.5"/>
+      <path d="M68 46c16-10 42-10 62 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" opacity="0.9"/>
+      <g stroke="#d6e6ff" stroke-width="1.3" stroke-dasharray="2.4 3.4" fill="none">
+        <path d="M100 46v102"/>
+        <path d="M58 100h84"/>
+        <path d="M62 48l76 98"/>
+        <path d="M138 48L62 146"/>
+      </g>
+      <g class="mascot-eye">
+        <ellipse cx="78" cy="62" rx="11.5" ry="13" fill="#fff"/>
+        <circle cx="79" cy="64" r="6.2" fill="url(#mascotIris)"/>
+        <circle cx="76.4" cy="60.8" r="2.2" fill="#fff"/>
+      </g>
+      <g class="mascot-eye">
+        <ellipse cx="122" cy="62" rx="11.5" ry="13" fill="#fff"/>
+        <circle cx="123" cy="64" r="6.2" fill="url(#mascotIris)"/>
+        <circle cx="120.4" cy="60.8" r="2.2" fill="#fff"/>
+      </g>
+      <path d="M91 80q9 8 18 0" fill="none" stroke="#fb7185" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="58" cy="78" rx="7.5" ry="4.6" fill="#fda4af" opacity="0.9"/>
+      <ellipse cx="142" cy="78" rx="7.5" ry="4.6" fill="#fda4af" opacity="0.9"/>
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke="#ffffff" stroke-width="9">
+          <path d="M99 100c1.5 1.6 3.4 2.8 4.6 4.6"/>
+          <path d="M76 108h48"/>
+          <path d="M76 108v9"/>
+          <path d="M124 108v11"/>
+          <path d="M74 128h52"/>
+          <path d="M100 118v28"/>
+          <path d="M100 146c0 7-11 9-15 4"/>
+          <path d="M72 142h56"/>
+        </g>
+        <g stroke="#1d4ed8" stroke-width="6.6">
+          <path d="M99 100c1.5 1.6 3.4 2.8 4.6 4.6"/>
+          <path d="M76 108h48"/>
+          <path d="M76 108v9"/>
+          <path d="M124 108v11"/>
+          <path d="M74 128h52"/>
+          <path d="M100 118v28"/>
+          <path d="M100 146c0 7-11 9-15 4"/>
+          <path d="M72 142h56"/>
+        </g>
+      </g>
+      <path d="M34 116c8-2 16 2 18 10" fill="none" stroke="url(#mascotArm)" stroke-width="15" stroke-linecap="round"/>
+      <circle cx="32" cy="128" r="8.5" fill="#e0f2fe"/>
+      <path d="M152 104c14-6 22 2 20 12" fill="none" stroke="url(#mascotArm)" stroke-width="14" stroke-linecap="round"/>
+      <g transform="translate(152 112) rotate(34)">
+        <polygon points="-4,-40 4,-40 0,-50" fill="#fde68a"/>
+        <polygon points="-1.2,-45 1.2,-45 0,-50" fill="#1e293b"/>
+        <rect x="-4" y="-40" width="8" height="28" rx="1.4" fill="url(#mascotPencil)"/>
+        <rect x="-4" y="-12" width="8" height="3" fill="#e2e8f0"/>
+        <rect x="-4" y="-9.4" width="8" height="10" rx="2" fill="#fb7185"/>
+      </g>
+      <circle cx="154" cy="114" r="8.2" fill="#e0f2fe" stroke="#bfdbfe" stroke-width="1.2"/>
     </g>
-    <!-- feet -->
-    <ellipse cx="74" cy="168" rx="16" ry="10" fill="#1a1a1a"/>
-    <ellipse cx="126" cy="168" rx="16" ry="10" fill="#1a1a1a"/>
-    <!-- scarf -->
-    <path d="M70 118c10 22 50 22 62-2" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="round"/>
-    <path d="M124 122l14 26c2 4-2 6-6 4l-12-18" fill="#ef4444"/>
-    <!-- head -->
-    <circle cx="100" cy="78" r="46" fill="#fff" stroke="#1a1a1a" stroke-width="3"/>
-    <ellipse cx="62" cy="48" rx="18" ry="16" fill="#1a1a1a" transform="rotate(-28 62 48)"/>
-    <ellipse cx="138" cy="48" rx="18" ry="16" fill="#1a1a1a" transform="rotate(28 138 48)"/>
-    <ellipse cx="82" cy="80" rx="13" ry="15" fill="#1a1a1a"/>
-    <ellipse cx="118" cy="80" rx="13" ry="15" fill="#1a1a1a"/>
-    <circle cx="86" cy="76" r="4.2" fill="#fff"/>
-    <circle cx="122" cy="76" r="4.2" fill="#fff"/>
-    <ellipse cx="100" cy="94" rx="8" ry="5.5" fill="#1a1a1a"/>
-    <path d="M96 100c3 5 11 5 14 0" fill="none" stroke="#1a1a1a" stroke-width="2.2" stroke-linecap="round"/>
-    <circle cx="70" cy="96" r="6" fill="#ffb3c1" opacity="0.9"/>
-    <circle cx="130" cy="96" r="6" fill="#ffb3c1" opacity="0.9"/>
   </svg>`;
 }
 
@@ -680,7 +737,7 @@ function renderHome() {
       </div>
     </div>
     ${tipStrip()}
-    <div class="mascot-wrap">${pandaSVG()}</div>
+    <div class="mascot-wrap">${mascotSVG()}</div>
     <div class="hello">
       <h1>${greet()}，${remainRev > 0 ? "开始复习吧" : "开始学习吧"}！</h1>
       <p>间隔记忆 · 今天记得更牢一点点</p>
@@ -2551,7 +2608,7 @@ function showOnboard() {
   const root = document.getElementById("modal-root");
   root.className = "show";
   root.innerHTML = `<div class="sheet">
-    <div class="center">${pandaSVG().replace('width="168"', "")}</div>
+    <div class="center">${mascotSVG()}</div>
     <h3>你好，欢迎来到千词斩</h3>
     <p class="h-sub" style="margin:8px 0 12px">用间隔复习记住三年级的会写字。先勾选要摸底的单元（已默认 1–7 单元）。本册共 8 个单元。</p>
     <p class="note" style="margin-bottom:14px"><strong>示例整理</strong>：生字表根据公开写字表整理，组词为常用示例，请以课本为准。</p>

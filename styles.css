@@ -159,13 +159,30 @@ input, textarea { font-family: inherit; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 6px 0 4px;
-  animation: floaty 3.4s ease-in-out infinite;
+  margin: 2px 0 2px;
 }
-.mascot-wrap svg { width: 168px; height: 168px; filter: drop-shadow(0 14px 16px rgba(30,80,160,0.16)); }
-@keyframes floaty {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
+.mascot-wrap svg { width: 176px; height: 176px; }
+.mascot-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: mascot-bob 3.4s ease-in-out infinite;
+}
+.mascot-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-blink 4.8s ease-in-out infinite;
+}
+@keyframes mascot-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes mascot-blink {
+  0%, 86%, 100% { transform: scaleY(1); }
+  91% { transform: scaleY(0.08); }
+  95% { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mascot-body, .mascot-eye { animation: none; }
 }
 .hello {
   text-align: center;
@@ -793,7 +810,8 @@ input, textarea { font-family: inherit; }
 }
 
 .sheet svg { width: 120px; height: 120px; display: block; margin: 0 auto 6px; }
-.sheet .mascot-wrap { margin: 0; animation: none; }
+.sheet .mascot-wrap { margin: 0; }
+.sheet .mascot-body, .sheet .mascot-eye { animation: none; }
 
 .bottom-spacer { height: 8px; }
 .cta.cta-full { margin-bottom: 8px; }
