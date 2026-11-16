@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-7";
+const APP_VERSION = "v2026.11.16-8";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -475,7 +475,7 @@ function setPracticeMode(mode) {
 function tipStrip() {
   return `<button class="tip-strip" type="button" data-act="show-tip">
     <span class="tip-ico" aria-hidden="true">🍱</span>
-    <span class="tip-txt">觉得不错？请开发者吃份便当</span>
+    <span class="tip-txt">觉得软件有帮助？请开发者吃个便当吧！</span>
     <span class="chev" aria-hidden="true">›</span>
   </button>`;
 }
