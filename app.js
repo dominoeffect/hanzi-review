@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-4";
+const APP_VERSION = "v2026.11.16-5";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -620,6 +620,16 @@ function renderHome() {
   const finished = assigned === 0 ? hist.studied : Math.max(0, assigned - remain);
   const pct = assigned ? Math.round((finished / assigned) * 100) : hist.done ? 100 : 0;
   const unit7left = ALL.filter((c) => c.unitId === 7 && cardOf(c.char).status === "new").length;
+  const nothingTested = !ALL.some((c) => cardOf(c.char).status !== "new");
+  const title = nothingTested
+    ? "先做一次摸底，系统会帮你安排复习"
+    : hist.done
+      ? "今日任务已完成，太棒了！"
+      : remain
+        ? todayTaskText(remainNew, remainRev)
+        : assigned
+          ? "今日任务已完成，太棒了！"
+          : "先选单元做一次摸底吧";
 
   return `
     <div class="topbar">
@@ -631,22 +641,22 @@ function renderHome() {
     </div>
     <div class="mascot-wrap">${pandaSVG()}</div>
     <div class="hello">
-      <h1>${greet()}，${remainRev ? "开始复习吧" : "开始学习吧"}！</h1>
+      <h1>${greet()}，${remainRev > 0 ? "开始复习吧" : "开始学习吧"}！</h1>
       <p>间隔记忆 · 今天记得更牢一点点</p>
     </div>
     ${
       unit7left
         ? `<button class="hint-banner" data-act="placement-unit" data-unit="7">
-            <span class="txt">第七单元还有 ${unit7left} 个字没摸底，建议优先复习</span>
+            <span class="txt">第七单元还有 ${unit7left} 个字没测过，先摸底看看哪些忘了</span>
             <span class="go">去摸底 ›</span>
           </button>`
         : ""
     }
     <div class="card today-card">
       <span class="tag">今日任务</span>
-      <h2>${hist.done ? "今日任务已完成，太棒了！" : remain ? todayTaskText(remainNew, remainRev) : assigned ? "今日任务已完成，太棒了！" : "先选单元做一次摸底吧"}</h2>
-      <div class="progress"><i style="width:${pct}%"></i></div>
-      <div class="progress-meta"><span>已完成 ${finished}/${assigned || finished}</span><span>${pct}%</span></div>
+      <h2>${title}</h2>
+      ${nothingTested ? "" : `<div class="progress"><i style="width:${pct}%"></i></div>
+      <div class="progress-meta"><span>已完成 ${finished}/${assigned || finished}</span><span>${pct}%</span></div>`}
     </div>
     <div class="cta-row">
       <button class="cta cta-new" data-act="start-new" ${newTotal === 0 ? "disabled" : ""}>
@@ -658,7 +668,9 @@ function renderHome() {
         <span class="sub">${revDone}/${revTotal || 0} 组</span>
       </button>
     </div>
-    <button class="cta cta-full ghost" data-tab="study">去学习页选择单元 / 摸底</button>
+    ${nothingTested
+      ? `<button class="cta cta-full" data-act="placement-unit" data-unit="7">去摸底第七单元</button>`
+      : `<button class="cta cta-full ghost" data-tab="study">去学习页选择单元 / 摸底</button>`}
   `;
 }
 
