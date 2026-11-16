@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-2";
+const APP_VERSION = "v2026.11.16-3";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -596,6 +596,12 @@ function render() {
   bindGlobal();
 }
 
+function todayTaskText(n, r) {
+  if (n && r) return `今天新学 ${n} 个字，复习 ${r} 个字`;
+  if (n) return `今天有 ${n} 个新字等你来学`;
+  return `还有 ${r} 个字等你来复习`;
+}
+
 function renderHome() {
   const plan = getTodayPlan();
   const hist = todayHistory();
@@ -624,7 +630,7 @@ function renderHome() {
     </div>
     <div class="mascot-wrap">${pandaSVG()}</div>
     <div class="hello">
-      <h1>${greet()}，开始复习吧！</h1>
+      <h1>${greet()}，${remainRev ? "开始复习吧" : "开始学习吧"}！</h1>
       <p>间隔记忆 · 今天记得更牢一点点</p>
     </div>
     ${
@@ -636,8 +642,8 @@ function renderHome() {
         : ""
     }
     <div class="card today-card">
-      <span class="tag">今日复习</span>
-      <h2>${hist.done ? "今日任务已完成，太棒了！" : remain ? `还有 ${remain} 个字等你来复习` : assigned ? "今日任务已完成，太棒了！" : "先选单元做一次摸底吧"}</h2>
+      <span class="tag">今日任务</span>
+      <h2>${hist.done ? "今日任务已完成，太棒了！" : remain ? todayTaskText(remainNew, remainRev) : assigned ? "今日任务已完成，太棒了！" : "先选单元做一次摸底吧"}</h2>
       <div class="progress"><i style="width:${pct}%"></i></div>
       <div class="progress-meta"><span>已完成 ${finished}/${assigned || finished}</span><span>${pct}%</span></div>
     </div>
