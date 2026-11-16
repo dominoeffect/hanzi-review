@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-5";
+const APP_VERSION = "v2026.11.16-6";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -138,13 +138,8 @@ function groupsOf(arr) {
 function getTodayPlan() {
   const today = todayStr();
   const selected = charsInSelected();
-  // 优先第七单元未测字，再按单元顺序
   const untested = selected.filter((c) => cardOf(c.char).status === "new");
-  untested.sort((a, b) => {
-    if (a.unitId === 7 && b.unitId !== 7) return -1;
-    if (b.unitId === 7 && a.unitId !== 7) return 1;
-    return a.unitId - b.unitId || String(a.lessonId).localeCompare(String(b.lessonId));
-  });
+  untested.sort((a, b) => a.unitId - b.unitId || String(a.lessonId).localeCompare(String(b.lessonId)));
   const newGroupsAll = groupsOf(untested);
   const newGroups = newGroupsAll.slice(0, DAILY_NEW_GROUPS);
   const due = selected.filter((c) => isDue(cardOf(c.char), today));
@@ -603,6 +598,43 @@ function todayTaskText(n, r) {
   return `还有 ${r} 个字等你来复习`;
 }
 
+function selectedUntested() {
+  const ids = (state.selectedUnits || []).slice().sort((a, b) => a - b);
+  const counts = ids.map((id) => ({
+    id,
+    n: ALL.filter((c) => c.unitId === id && cardOf(c.char).status === "new").length,
+  }));
+  const first = counts.find((x) => x.n > 0);
+  return {
+    ids,
+    total: counts.reduce((sum, x) => sum + x.n, 0),
+    firstId: first ? first.id : null,
+  };
+}
+
+function placementBanner(picked) {
+  if (!picked.ids.length) {
+    return `<button class="hint-banner" data-tab="study">
+      <span class="txt">还没选单元，先去学习页勾选要复习的单元</span>
+      <span class="go">›</span>
+    </button>`;
+  }
+  if (!picked.total) return "";
+  const lead = picked.ids.length === 1
+    ? `第${picked.ids[0]}单元还有 ${picked.total} 个字没测过`
+    : `已选单元还有 ${picked.total} 个字没测过`;
+  return `<button class="hint-banner" data-act="placement-unit" data-unit="${picked.firstId}">
+    <span class="txt">${lead}，先摸底看看哪些忘了</span>
+    <span class="go">去摸底 ›</span>
+  </button>`;
+}
+
+function freshHomeAction(nothingTested, picked) {
+  if (!nothingTested) return `<button class="cta cta-full ghost" data-tab="study">去学习页选择单元 / 摸底</button>`;
+  if (!picked.firstId) return `<button class="cta cta-full" data-tab="study">去选单元</button>`;
+  return `<button class="cta cta-full" data-act="placement-unit" data-unit="${picked.firstId}">去摸底</button>`;
+}
+
 function renderHome() {
   const plan = getTodayPlan();
   const hist = todayHistory();
@@ -619,7 +651,7 @@ function renderHome() {
   const remain = remainNew + remainRev;
   const finished = assigned === 0 ? hist.studied : Math.max(0, assigned - remain);
   const pct = assigned ? Math.round((finished / assigned) * 100) : hist.done ? 100 : 0;
-  const unit7left = ALL.filter((c) => c.unitId === 7 && cardOf(c.char).status === "new").length;
+  const picked = selectedUntested();
   const nothingTested = !ALL.some((c) => cardOf(c.char).status !== "new");
   const title = nothingTested
     ? "先做一次摸底，系统会帮你安排复习"
@@ -644,14 +676,7 @@ function renderHome() {
       <h1>${greet()}，${remainRev > 0 ? "开始复习吧" : "开始学习吧"}！</h1>
       <p>间隔记忆 · 今天记得更牢一点点</p>
     </div>
-    ${
-      unit7left
-        ? `<button class="hint-banner" data-act="placement-unit" data-unit="7">
-            <span class="txt">第七单元还有 ${unit7left} 个字没测过，先摸底看看哪些忘了</span>
-            <span class="go">去摸底 ›</span>
-          </button>`
-        : ""
-    }
+    ${placementBanner(picked)}
     <div class="card today-card">
       <span class="tag">今日任务</span>
       <h2>${title}</h2>
@@ -668,9 +693,7 @@ function renderHome() {
         <span class="sub">${revDone}/${revTotal || 0} 组</span>
       </button>
     </div>
-    ${nothingTested
-      ? `<button class="cta cta-full" data-act="placement-unit" data-unit="7">去摸底第七单元</button>`
-      : `<button class="cta cta-full ghost" data-tab="study">去学习页选择单元 / 摸底</button>`}
+    ${freshHomeAction(nothingTested, picked)}
   `;
 }
 
@@ -683,12 +706,11 @@ function renderStudy() {
       const wrong = chars.filter((c) => cardOf(c.char).inWrongBook && cardOf(c.char).status !== "mastered").length;
       const mastered = chars.filter((c) => cardOf(c.char).status === "mastered").length;
       const open = u._open ? "open" : "";
-      const pri = u.id === 7 ? "priority" : "";
       return `<div class="card unit-card ${open}" data-unit-card="${u.id}">
-        <div class="unit-head ${pri}">
+        <div class="unit-head">
           <button class="ck ${selected.has(u.id) ? "on" : ""}" data-act="toggle-unit" data-unit="${u.id}">${selected.has(u.id) ? "✓" : ""}</button>
           <button class="meta" data-act="toggle-open" data-unit="${u.id}">
-            <b>第${u.id}单元 · ${u.name}${u.id === 7 ? "  · 建议优先" : ""}</b>
+            <b>第${u.id}单元 · ${u.name}</b>
             <span>${chars.length} 个会写字 · 已测 ${known} · 掌握 ${mastered}${wrong ? " · 错字 " + wrong : ""}</span>
           </button>
         </div>
@@ -2527,7 +2549,7 @@ function showOnboard() {
   root.innerHTML = `<div class="sheet">
     <div class="center">${pandaSVG().replace('width="168"', "")}</div>
     <h3>你好，欢迎来到千词斩</h3>
-    <p class="h-sub" style="margin:8px 0 12px">用间隔复习记住三年级的会写字。先勾选要摸底的单元（已默认 1–7 单元，第七单元建议优先）。本册共 8 个单元。</p>
+    <p class="h-sub" style="margin:8px 0 12px">用间隔复习记住三年级的会写字。先勾选要摸底的单元（已默认 1–7 单元）。本册共 8 个单元。</p>
     <p class="note" style="margin-bottom:14px"><strong>示例整理</strong>：生字表根据公开写字表整理，组词为常用示例，请以课本为准。</p>
     <button class="cta cta-full green" id="go-onboard">开始吧</button>
   </div>`;
