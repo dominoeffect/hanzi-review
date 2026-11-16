@@ -8,11 +8,14 @@
   <meta name="apple-mobile-web-app-title" content="千词斩" />
   <meta name="theme-color" content="#b8e0ff" />
   <meta name="format-detection" content="telephone=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>千词斩 · 生字复习</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=__BUILD__" />
 </head>
 <body>
   <div id="app">
@@ -25,7 +28,8 @@
     <nav class="tabbar" id="tabbar" hidden></nav>
   </div>
   <div id="modal-root"></div>
-  <script src="./vendor/hanzi-writer.min.js"></script>
-  <script src="./app.js" defer></script>
+  <script>window.APP_BUILD="__BUILD__";</script>
+  <script src="./vendor/hanzi-writer.min.js?v=__BUILD__"></script>
+  <script src="./app.js?v=__BUILD__" defer></script>
 </body>
 </html>

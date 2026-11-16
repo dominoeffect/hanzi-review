@@ -28,6 +28,12 @@ jobs:
         with:
           enablement: true
 
+      - name: Stamp build id
+        run: |
+          BUILD="${GITHUB_SHA::7}"
+          sed -i "s/__BUILD__/${BUILD}/g" index.html
+          printf '%s\n' "{\"build\":\"${BUILD}\"}" > version.json
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

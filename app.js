@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-3";
+const APP_VERSION = "v2026.11.16-4";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -594,6 +594,7 @@ function render() {
   else if (tab === "wrong") view.innerHTML = renderWrong();
   else view.innerHTML = renderMe();
   bindGlobal();
+  applyPendingUpdate();
 }
 
 function todayTaskText(n, r) {
@@ -829,7 +830,7 @@ function renderMe() {
       本册按统编版（2024 修订）编排，共 8 个单元。进度保存在本机，不需要登录。
     </div>
     <button class="cta cta-full ghost" style="margin-top:14px" data-act="reset">清空学习进度</button>
-    <p class="app-ver">${APP_VERSION}</p>
+    <p class="app-ver">${versionLabel()}</p>
     <div class="bottom-spacer"></div>
   `;
 }
@@ -2547,14 +2548,79 @@ function setupViewport() {
   }
 }
 
+function versionLabel() {
+  const build = window.APP_BUILD;
+  if (build && build !== "__BUILD__") return `${APP_VERSION} · ${build}`;
+  return APP_VERSION;
+}
+
+const UPDATE_KEY = "hanzi-review-reloaded-build";
+let pendingBuild = null;
+
+function studyInProgress() {
+  return !!(session && session.active);
+}
+
+function alreadyReloadedTo(build) {
+  try {
+    return sessionStorage.getItem(UPDATE_KEY) === build;
+  } catch (e) {
+    return false;
+  }
+}
+
+function reloadToBuild(build) {
+  if (!build || build === window.APP_BUILD || !window.APP_BUILD || window.APP_BUILD === "__BUILD__") {
+    pendingBuild = null;
+    return;
+  }
+  if (alreadyReloadedTo(build)) {
+    pendingBuild = null;
+    return;
+  }
+  try {
+    sessionStorage.setItem(UPDATE_KEY, build);
+  } catch (e) {}
+  pendingBuild = null;
+  location.replace(location.pathname + "?v=" + encodeURIComponent(build));
+}
+
+function applyPendingUpdate() {
+  if (!pendingBuild || studyInProgress() || tab !== "home") return;
+  reloadToBuild(pendingBuild);
+}
+
+async function checkForUpdate() {
+  const current = window.APP_BUILD;
+  if (!current || current === "__BUILD__") return;
+  try {
+    const res = await fetch("./version.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    const build = data && data.build;
+    if (!build || build === current || alreadyReloadedTo(build)) return;
+    pendingBuild = build;
+    if (studyInProgress()) return;
+    reloadToBuild(build);
+  } catch (e) {}
+}
+
+function watchUpdates() {
+  checkForUpdate();
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") checkForUpdate();
+  });
+}
+
 async function boot() {
   setupViewport();
   loadState();
   setupSpeechUnlock();
+  watchUpdates();
   try {
     const [res, strokeRes] = await Promise.all([
-      fetch("./data/characters.json"),
-      fetch("./data/strokes.json"),
+      fetch(`./data/characters.json?v=${window.APP_BUILD}`),
+      fetch(`./data/strokes.json?v=${window.APP_BUILD}`),
     ]);
     DATA = await res.json();
     STROKES = await strokeRes.json();
