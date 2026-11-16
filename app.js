@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-6";
+const APP_VERSION = "v2026.11.16-7";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -472,14 +472,22 @@ function setPracticeMode(mode) {
   saveState();
 }
 
+function tipStrip() {
+  return `<button class="tip-strip" type="button" data-act="show-tip">
+    <span class="tip-ico" aria-hidden="true">🍱</span>
+    <span class="tip-txt">觉得不错？请开发者吃份便当</span>
+    <span class="chev" aria-hidden="true">›</span>
+  </button>`;
+}
+
 function pageTop(title, extra = "") {
   return `<div class="topbar">
     <div class="top-left">
-      <button class="icon-btn" data-tab="home" aria-label="返回首页">‹</button>
       <div class="brand">${title}</div>
     </div>
     ${extra}
-  </div>`;
+  </div>
+  ${tipStrip()}`;
 }
 
 function modeToggleHtml() {
@@ -671,6 +679,7 @@ function renderHome() {
         <span class="pill"><span class="ico">⭐</span>${state.profile.coins}</span>
       </div>
     </div>
+    ${tipStrip()}
     <div class="mascot-wrap">${pandaSVG()}</div>
     <div class="hello">
       <h1>${greet()}，${remainRev > 0 ? "开始复习吧" : "开始学习吧"}！</h1>
@@ -852,11 +861,6 @@ function renderMe() {
       </div>
       <p class="h-sub">三档都会检查笔顺，只是字形和位置的宽容程度不同。宽松更适合孩子（默认）。字写对但笔顺不对时会单独提示。</p>
     </div>
-    <button class="tip-entry" type="button" data-act="show-tip">
-      <span class="tip-ico">🍱</span>
-      <span class="tip-txt"><strong>请开发者吃便当</strong><small>如果觉得还不错，请随意打赏</small></span>
-      <span class="chev">›</span>
-    </button>
     <div class="note">
       <strong>数据说明（${DATA.meta.dataLabel}）</strong><br/>
       ${DATA.meta.sourceNote}<br/>
