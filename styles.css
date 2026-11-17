@@ -161,7 +161,7 @@ input, textarea { font-family: inherit; }
   align-items: center;
   margin: 2px 0 2px;
 }
-.mascot-wrap svg { width: 176px; height: 176px; }
+.mascot-wrap svg { width: 184px; height: auto; }
 .mascot-body {
   transform-box: fill-box;
   transform-origin: 50% 100%;
