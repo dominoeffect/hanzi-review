@@ -161,28 +161,26 @@ input, textarea { font-family: inherit; }
   align-items: center;
   margin: 2px 0 2px;
 }
-.mascot-wrap svg { width: 184px; height: auto; }
-.mascot-body {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
+.mascot-wrap img {
+  width: 168px;
+  height: auto;
+  aspect-ratio: 338 / 360;
+  display: block;
   animation: mascot-bob 3.4s ease-in-out infinite;
 }
-.mascot-eye {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: mascot-blink 4.8s ease-in-out infinite;
+.mascot-shadow {
+  width: 42%;
+  height: 10px;
+  margin-top: -2px;
+  border-radius: 50%;
+  background: rgba(28, 61, 90, 0.16);
 }
 @keyframes mascot-bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
-@keyframes mascot-blink {
-  0%, 86%, 100% { transform: scaleY(1); }
-  91% { transform: scaleY(0.08); }
-  95% { transform: scaleY(1); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .mascot-body, .mascot-eye { animation: none; }
+  .mascot-wrap img { animation: none; }
 }
 .hello {
   text-align: center;
@@ -809,9 +807,8 @@ input, textarea { font-family: inherit; }
   white-space: nowrap;
 }
 
-.sheet svg { width: 120px; height: 120px; display: block; margin: 0 auto 6px; }
-.sheet .mascot-wrap { margin: 0; }
-.sheet .mascot-body, .sheet .mascot-eye { animation: none; }
+.sheet .mascot-wrap { margin: 0 auto 6px; }
+.sheet .mascot-wrap img { width: 132px; animation: none; }
 
 .bottom-spacer { height: 8px; }
 .cta.cta-full { margin-bottom: 8px; }

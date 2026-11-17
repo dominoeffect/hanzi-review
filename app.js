@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-12";
+const APP_VERSION = "v2026.11.16-13";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -510,61 +510,11 @@ function icon(name, active) {
   return icons[name];
 }
 
-function mascotSVG() {
-  return `<svg class="mascot" viewBox="0 0 200 214" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <defs>
-      <linearGradient id="mascotBlob" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#a9e2fb"/>
-        <stop offset="0.55" stop-color="#8acff8"/>
-        <stop offset="1" stop-color="#6ebfed"/>
-      </linearGradient>
-    </defs>
-    <ellipse cx="104" cy="202" rx="52" ry="7" fill="rgba(28,61,90,0.14)"/>
-    <g class="mascot-body">
-      <path d="M104 58c40 0 70 28 70 66c0 40-30 70-70 72c-40-2-70-32-70-72c0-38 30-66 70-66z" fill="url(#mascotBlob)" stroke="#1c3d5a" stroke-width="3.6" stroke-linejoin="round"/>
-      <path d="M62 78c14-16 40-20 62-8" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
-      <path d="M96 98c-8-8-20-6-24 2" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M118 98c8-8 20-6 24 2" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"/>
-      <ellipse cx="72" cy="118" rx="9" ry="5.5" fill="#ffb3c7" opacity="0.72"/>
-      <ellipse cx="142" cy="118" rx="9" ry="5.5" fill="#ffb3c7" opacity="0.72"/>
-      <g class="mascot-eye">
-        <circle cx="82" cy="108" r="11" fill="#fff" stroke="#1c3d5a" stroke-width="2.3"/>
-        <circle cx="84" cy="110" r="5.6" fill="#1a1a1a"/>
-        <circle cx="82" cy="107.5" r="2.1" fill="#fff"/>
-        <path d="M89 102.5l.6 1.7h1.8l-1.4 1.1.6 1.8-1.6-1.1-1.6 1.1.6-1.8-1.4-1.1h1.8z" fill="#7dd3fc"/>
-      </g>
-      <g class="mascot-eye">
-        <circle cx="130" cy="108" r="11" fill="#fff" stroke="#1c3d5a" stroke-width="2.3"/>
-        <circle cx="132" cy="110" r="5.6" fill="#1a1a1a"/>
-        <circle cx="130" cy="107.5" r="2.1" fill="#fff"/>
-        <path d="M137 102.5l.6 1.7h1.8l-1.4 1.1.6 1.8-1.6-1.1-1.6 1.1.6-1.8-1.4-1.1h1.8z" fill="#7dd3fc"/>
-      </g>
-      <path d="M93 122c2-4 9-6 15-6s13 2 15 6c0 11-6 16-15 16s-15-5-15-16z" fill="#9f1239" stroke="#1c3d5a" stroke-width="2.4" stroke-linejoin="round"/>
-      <ellipse cx="108" cy="132" rx="9" ry="5.5" fill="#fda4af"/>
-      <g transform="translate(73.6 139.8) scale(0.058 -0.058) translate(0 -900)" fill="#ffffff">
-      <path d="M 467 799 Q 497 777 529 750 Q 545 737 564 739 Q 576 740 580 756 Q 584 774 571 807 Q 556 841 457 853 Q 438 854 432 852 Q 426 846 429 832 Q 435 819 467 799 Z"/>
-      <path d="M 277 656 Q 277 677 254 696 Q 236 712 233 686 Q 237 656 194 602 Q 149 554 165 507 Q 166 498 171 491 Q 184 464 206 491 Q 221 512 268 623 L 277 656 Z"/>
-      <path d="M 268 623 Q 289 611 326 619 Q 476 665 705 681 Q 730 684 741 681 Q 759 668 756 661 Q 756 657 725 583 Q 718 570 725 565 Q 732 561 749 573 Q 804 613 850 627 Q 887 640 887 649 Q 886 659 812 712 Q 788 730 707 714 Q 503 690 373 668 Q 324 661 277 656 C 247 653 239 632 268 623 Z"/>
-      <path d="M 518 399 Q 642 495 669 501 Q 688 508 683 524 Q 680 540 614 578 Q 595 588 572 580 Q 511 558 418 532 Q 393 525 335 527 Q 311 528 319 508 Q 326 495 346 483 Q 377 467 411 486 Q 433 493 546 534 Q 559 538 571 532 Q 584 525 578 511 Q 545 465 508 409 C 491 384 494 381 518 399 Z"/>
-      <path d="M 551 333 Q 536 381 518 399 L 508 409 Q 498 419 487 424 Q 477 431 471 423 Q 467 419 474 405 Q 490 371 500 328 L 507 289 Q 525 120 490 66 Q 489 65 487 62 Q 478 58 377 89 Q 367 92 360 88 Q 354 87 370 74 Q 437 19 475 -30 Q 493 -49 511 -40 Q 535 -27 553 27 Q 578 120 558 293 L 551 333 Z"/>
-      <path d="M 558 293 Q 718 311 889 296 Q 911 293 918 301 Q 925 314 914 325 Q 886 352 844 371 Q 831 377 806 369 Q 737 356 667 346 Q 600 340 551 333 L 500 328 Q 491 331 308 309 Q 241 299 139 298 Q 126 299 124 288 Q 123 276 141 262 Q 157 250 187 238 Q 197 234 214 242 Q 230 246 303 259 Q 393 280 507 289 L 558 293 Z"/>
-      </g>
-      <g transform="translate(42 118) rotate(-38)">
-        <path d="M0 -30c5-9 11-9 13 0c1 6-3 11-6.5 12c-5 1.5-8-3-6.5-12z" fill="#1a1a1a" stroke="#1c3d5a" stroke-width="1.6" stroke-linejoin="round"/>
-        <rect x="-2.4" y="-18" width="8" height="5.5" rx="1" fill="#f8fafc" stroke="#1c3d5a" stroke-width="1.2"/>
-        <rect x="-3" y="-13.5" width="9" height="32" rx="2.4" fill="#8d5a32" stroke="#1c3d5a" stroke-width="1.6"/>
-      </g>
-      <circle cx="48" cy="132" r="12" fill="#8acff8" stroke="#1c3d5a" stroke-width="3"/>
-      <circle cx="168" cy="128" r="12" fill="#8acff8" stroke="#1c3d5a" stroke-width="3"/>
-      <polygon points="70,52 128,36 162,56 104,74" fill="#ef3b3b" stroke="#1c3d5a" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M92 60c14 10 36 8 50-6l-2 14c-14 12-36 12-50 2z" fill="#dc2626" stroke="#1c3d5a" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="76" cy="58" r="4.2" fill="#e11d48" stroke="#1c3d5a" stroke-width="1.7"/>
-      <path d="M74 62c-3 7-6 12-6 18" fill="none" stroke="#ef4444" stroke-width="3.6" stroke-linecap="round"/>
-      <path d="M58 80c5 1 14 1 19-1c-1 6-4 14-9.5 20c-5.5-6-8.5-14-9.5-19z" fill="#ef4444" stroke="#1c3d5a" stroke-width="1.6" stroke-linejoin="round"/>
-      <path d="M64 86v12M68 84v16M72 86v12" stroke="#b91c1c" stroke-width="1.5" stroke-linecap="round"/>
-    </g>
-  </svg>`;
+function mascotImg() {
+  const v = window.APP_BUILD || "";
+  return `<div class="mascot-wrap"><img src="./assets/mascot.png?v=${v}" alt="" width="338" height="360"><span class="mascot-shadow" aria-hidden="true"></span></div>`;
 }
+
 
 function tabbarHTML() {
   const plan = getTodayPlan();
@@ -699,7 +649,7 @@ function renderHome() {
       </div>
     </div>
     ${tipStrip()}
-    <div class="mascot-wrap">${mascotSVG()}</div>
+    ${mascotImg()}
     <div class="hello">
       <h1>${greet()}，${remainRev > 0 ? "开始复习吧" : "开始学习吧"}！</h1>
       <p>间隔记忆 · 今天记得更牢一点点</p>
@@ -2570,7 +2520,7 @@ function showOnboard() {
   const root = document.getElementById("modal-root");
   root.className = "show";
   root.innerHTML = `<div class="sheet">
-    <div class="center">${mascotSVG()}</div>
+    <div class="center">${mascotImg()}</div>
     <h3>你好，欢迎来到千词斩</h3>
     <p class="h-sub" style="margin:8px 0 12px">用间隔复习记住三年级的会写字。先勾选要摸底的单元（已默认 1–7 单元）。本册共 8 个单元。</p>
     <p class="note" style="margin-bottom:14px"><strong>示例整理</strong>：生字表根据公开写字表整理，组词为常用示例，请以课本为准。</p>
