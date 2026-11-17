@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-11";
+const APP_VERSION = "v2026.11.16-12";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -523,22 +523,25 @@ function mascotSVG() {
     <g class="mascot-body">
       <path d="M104 58c40 0 70 28 70 66c0 40-30 70-70 72c-40-2-70-32-70-72c0-38 30-66 70-66z" fill="url(#mascotBlob)" stroke="#1c3d5a" stroke-width="3.6" stroke-linejoin="round"/>
       <path d="M62 78c14-16 40-20 62-8" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity="0.45"/>
-      <path d="M78 92c6-7 14-8 18-2" fill="none" stroke="#1c3d5a" stroke-width="2.4" stroke-linecap="round"/>
-      <path d="M118 90c6-7 14-8 18-2" fill="none" stroke="#1c3d5a" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="M96 98c-8-8-20-6-24 2" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M118 98c8-8 20-6 24 2" fill="none" stroke="#1c3d5a" stroke-width="2.5" stroke-linecap="round"/>
+      <ellipse cx="72" cy="118" rx="9" ry="5.5" fill="#ffb3c7" opacity="0.72"/>
+      <ellipse cx="142" cy="118" rx="9" ry="5.5" fill="#ffb3c7" opacity="0.72"/>
       <g class="mascot-eye">
-        <circle cx="90" cy="108" r="14" fill="#fff" stroke="#1c3d5a" stroke-width="2.4"/>
-        <circle cx="92" cy="110" r="7.4" fill="#1a1a1a"/>
-        <circle cx="89" cy="107" r="2.5" fill="#fff"/>
-        <path d="M98 102l.7 2h2.1l-1.7 1.3.7 2.1-1.8-1.3-1.8 1.3.7-2.1-1.7-1.3h2.1z" fill="#7dd3fc"/>
+        <circle cx="82" cy="108" r="11" fill="#fff" stroke="#1c3d5a" stroke-width="2.3"/>
+        <circle cx="84" cy="110" r="5.6" fill="#1a1a1a"/>
+        <circle cx="82" cy="107.5" r="2.1" fill="#fff"/>
+        <path d="M89 102.5l.6 1.7h1.8l-1.4 1.1.6 1.8-1.6-1.1-1.6 1.1.6-1.8-1.4-1.1h1.8z" fill="#7dd3fc"/>
       </g>
       <g class="mascot-eye">
-        <circle cx="126" cy="108" r="14" fill="#fff" stroke="#1c3d5a" stroke-width="2.4"/>
-        <circle cx="128" cy="110" r="7.4" fill="#1a1a1a"/>
-        <circle cx="125" cy="107" r="2.5" fill="#fff"/>
-        <path d="M134 102l.7 2h2.1l-1.7 1.3.7 2.1-1.8-1.3-1.8 1.3.7-2.1-1.7-1.3h2.1z" fill="#7dd3fc"/>
+        <circle cx="130" cy="108" r="11" fill="#fff" stroke="#1c3d5a" stroke-width="2.3"/>
+        <circle cx="132" cy="110" r="5.6" fill="#1a1a1a"/>
+        <circle cx="130" cy="107.5" r="2.1" fill="#fff"/>
+        <path d="M137 102.5l.6 1.7h1.8l-1.4 1.1.6 1.8-1.6-1.1-1.6 1.1.6-1.8-1.4-1.1h1.8z" fill="#7dd3fc"/>
       </g>
-      <path d="M98 118c3.5 8 14 8 19 0c-3 5-7 6.5-9.5 6.5s-6.5-1.5-9.5-6.5z" fill="#ff4d6a" stroke="#1c3d5a" stroke-width="2.2" stroke-linejoin="round"/>
-      <g transform="translate(77.3 138.2) scale(0.052 -0.052) translate(0 -900)" fill="#ffffff">
+      <path d="M93 122c2-4 9-6 15-6s13 2 15 6c0 11-6 16-15 16s-15-5-15-16z" fill="#9f1239" stroke="#1c3d5a" stroke-width="2.4" stroke-linejoin="round"/>
+      <ellipse cx="108" cy="132" rx="9" ry="5.5" fill="#fda4af"/>
+      <g transform="translate(73.6 139.8) scale(0.058 -0.058) translate(0 -900)" fill="#ffffff">
       <path d="M 467 799 Q 497 777 529 750 Q 545 737 564 739 Q 576 740 580 756 Q 584 774 571 807 Q 556 841 457 853 Q 438 854 432 852 Q 426 846 429 832 Q 435 819 467 799 Z"/>
       <path d="M 277 656 Q 277 677 254 696 Q 236 712 233 686 Q 237 656 194 602 Q 149 554 165 507 Q 166 498 171 491 Q 184 464 206 491 Q 221 512 268 623 L 277 656 Z"/>
       <path d="M 268 623 Q 289 611 326 619 Q 476 665 705 681 Q 730 684 741 681 Q 759 668 756 661 Q 756 657 725 583 Q 718 570 725 565 Q 732 561 749 573 Q 804 613 850 627 Q 887 640 887 649 Q 886 659 812 712 Q 788 730 707 714 Q 503 690 373 668 Q 324 661 277 656 C 247 653 239 632 268 623 Z"/>
@@ -552,14 +555,13 @@ function mascotSVG() {
         <rect x="-3" y="-13.5" width="9" height="32" rx="2.4" fill="#8d5a32" stroke="#1c3d5a" stroke-width="1.6"/>
       </g>
       <circle cx="48" cy="132" r="12" fill="#8acff8" stroke="#1c3d5a" stroke-width="3"/>
-      <path d="M158 118c12 0 18 8 14 16" fill="none" stroke="#1c3d5a" stroke-width="12" stroke-linecap="round"/>
-      <circle cx="172" cy="132" r="11" fill="#8acff8" stroke="#1c3d5a" stroke-width="3"/>
+      <circle cx="168" cy="128" r="12" fill="#8acff8" stroke="#1c3d5a" stroke-width="3"/>
       <polygon points="70,52 128,36 162,56 104,74" fill="#ef3b3b" stroke="#1c3d5a" stroke-width="3" stroke-linejoin="round"/>
       <path d="M92 60c14 10 36 8 50-6l-2 14c-14 12-36 12-50 2z" fill="#dc2626" stroke="#1c3d5a" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="74" cy="56" r="3.2" fill="#b91c1c" stroke="#1c3d5a" stroke-width="1.5"/>
-      <path d="M74 59c-4 6-8 10-10 16" fill="none" stroke="#ef3b3b" stroke-width="2.4" stroke-linecap="round"/>
-      <circle cx="62" cy="76" r="3" fill="#ef3b3b" stroke="#1c3d5a" stroke-width="1.4"/>
-      <path d="M58 78v7M62 79v9M66 78v7" stroke="#ef3b3b" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="76" cy="58" r="4.2" fill="#e11d48" stroke="#1c3d5a" stroke-width="1.7"/>
+      <path d="M74 62c-3 7-6 12-6 18" fill="none" stroke="#ef4444" stroke-width="3.6" stroke-linecap="round"/>
+      <path d="M58 80c5 1 14 1 19-1c-1 6-4 14-9.5 20c-5.5-6-8.5-14-9.5-19z" fill="#ef4444" stroke="#1c3d5a" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M64 86v12M68 84v16M72 86v12" stroke="#b91c1c" stroke-width="1.5" stroke-linecap="round"/>
     </g>
   </svg>`;
 }
