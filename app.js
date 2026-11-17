@@ -1,7 +1,7 @@
 /* 千词斩 · 生字复习 */
 const STORAGE_KEY = "qiancizhan-hanzi-v1";
 const INTERVALS = [1, 2, 4, 7, 15];
-const APP_VERSION = "v2026.11.16-13";
+const APP_VERSION = "v2026.11.16-14";
 const GROUP_SIZE = 8;
 const DAILY_NEW_GROUPS = 2;
 
@@ -359,7 +359,7 @@ function charSpeakText(item) {
 function shouldSpeakCharFirst(item) {
   if (!item || !session) return false;
   // 训练场纯听写在揭晓前不读生字，以免直接报出答案
-  if (session.mode === "dictation" && !session.revealed && !session.hwResult) return false;
+  if (!session.revealed && !session.hwResult && (session.mode === "dictation" || session.mode === "pinyin")) return false;
   return true;
 }
 
@@ -733,13 +733,18 @@ function renderStudy() {
   `;
 }
 
+function trainIcon(file) {
+  const v = window.APP_BUILD || "";
+  return `<img class="train-ico" src="./assets/icons/${file}?v=${v}" alt="" width="192" height="208">`;
+}
+
 function renderTrain() {
   const items = [
-    { id: "dictation", ico: "听", bg: "linear-gradient(135deg,#60a5fa,#2563eb)", title: "听写", desc: "听词语，在田字格里写出汉字" },
-    { id: "pinyin", ico: "拼", bg: "linear-gradient(135deg,#38bdf8,#0284c7)", title: "看拼音写字", desc: "看拼音和组词，回忆字形再默写" },
-    { id: "words", ico: "词", bg: "linear-gradient(135deg,#34d399,#059669)", title: "组词选择", desc: "给生字选出正确的组词" },
-    { id: "similar", ico: "辨", bg: "linear-gradient(135deg,#fbbf24,#f59e0b)", title: "形近字辨析", desc: "把容易写混的字区分开来" },
-    { id: "wrong", ico: "错", bg: "linear-gradient(135deg,#fb7185,#e11d48)", title: "错字巩固", desc: "专练错字本里还没掌握的字" },
+    { id: "dictation", icon: "tingxie.png", title: "听写", desc: "听词语，在田字格里写出汉字" },
+    { id: "pinyin", icon: "pinyin.png", title: "看拼音写字", desc: "看拼音和组词，回忆字形再默写" },
+    { id: "words", icon: "zuci.png", title: "选字填空", desc: "看拼音，把字填进词语里" },
+    { id: "similar", icon: "xingjin.png", title: "形近字辨析", desc: "把容易写混的字区分开来" },
+    { id: "wrong", icon: "cuozi.png", title: "错字巩固", desc: "专练错字本里还没掌握的字" },
   ];
   return `
     ${pageTop("训练场")}
@@ -749,7 +754,7 @@ function renderTrain() {
       ${items
         .map(
           (it) => `<button class="train-card" data-act="train" data-mode="${it.id}">
-          <span class="train-ico" style="background:${it.bg}">${it.ico}</span>
+          ${trainIcon(it.icon)}
           <b>${it.title}</b>
           <span>${it.desc}</span>
         </button>`
@@ -901,7 +906,8 @@ function renderWordPills(item, revealed) {
   return `<div class="words-row">${item.words
     .map((w) => {
       const label = revealed ? escapeHtml(w) : maskWordHtml(w, item.char);
-      return `<button class="word-pill" data-act="speak" data-text="${escapeHtml(w)}" aria-label="朗读 ${escapeHtml(w)}">${speakerIcon()}<span class="wtxt">${label}</span></button>`;
+      const aria = revealed ? `朗读 ${w}` : "朗读词语";
+      return `<button class="word-pill" data-act="speak" data-text="${escapeHtml(w)}" aria-label="${escapeHtml(aria)}">${speakerIcon()}<span class="wtxt">${label}</span></button>`;
     })
     .join("")}</div>`;
 }
@@ -1013,48 +1019,132 @@ function renderWriteQuiz(item, mode) {
   `;
 }
 
+const WORD_PINYIN = {"山坡":"shān pō","坡度":"pō dù","上坡":"shàng pō","足球":"zú qiú","地球":"dì qiú","气球":"qì qiú","招手":"zhāo shǒu","招呼":"zhāo hū","招生":"zhāo shēng","呼喊":"hū hǎn","呼吸":"hū xī","欢呼":"huān hū","飘扬":"piāo yáng","飘动":"piāo dòng","飘落":"piāo luò","表扬":"biǎo yáng","飞扬":"fēi yáng","扬起":"yáng qǐ","读书":"dú shū","朗读":"lǎng dú","阅读":"yuè dú","热情":"rè qíng","热闹":"rè nào","热爱":"rè ài","闹钟":"nào zhōng","吵闹":"chǎo nào","粗心":"cū xīn","粗细":"cū xì","粗壮":"cū zhuàng","壮实":"zhuàng shí","壮大":"zhuàng dà","壮观":"zhuàng guān","清洁":"qīng jié","洁白":"jié bái","整洁":"zhěng jié","轰隆":"hōng lōng","轰动":"hōng dòng","炮轰":"pào hōng","潮湿":"cháo shī","湿润":"shī rùn","湿度":"shī dù","润色":"rùn sè","利润":"lì rùn","笛子":"dí zǐ","竹笛":"zhú dí","汽笛":"qì dí","狂风":"kuáng fēng","狂欢":"kuáng huān","疯狂":"fēng kuáng","功课":"gōng kè","成功":"chéng gōng","功劳":"gōng láo","惩罚":"chéng fá","罚款":"fá kuǎn","处罚":"chǔ fá","互相":"hù xiāng","互助":"hù zhù","相互":"xiāng hù","碰撞":"pèng zhuàng","碰见":"pèng jiàn","碰运气":"pèng yùn qì","黄色":"huáng sè","黄金":"huáng jīn","黄叶":"huáng yè","着急":"zháo jí","紧急":"jǐn jí","急忙":"jí máng","家庭":"jiā tíng","庭院":"tíng yuàn","法庭":"fǎ tíng","相信":"xiāng xìn","相同":"xiāng tóng","未来":"wèi lái","未知":"wèi zhī","未必":"wèi bì","寒冷":"hán lěng","寒风":"hán fēng","寒冬":"hán dōng","小径":"xiǎo jìng","路径":"lù jìng","直径":"zhí jìng","斜坡":"xié pō","倾斜":"qīng xié","斜射":"xié shè","枫叶":"fēng yè","枫树":"fēng shù","枫林":"fēng lín","霜冻":"shuāng dòng","霜降":"shuāng jiàng","冰霜":"bīng shuāng","挑水":"tiāo shuǐ","挑选":"tiāo xuǎn","挑战":"tiǎo zhàn","深浅":"shēn qiǎn","深入":"shēn rù","深刻":"shēn kè","落叶":"luò yè","落后":"luò hòu","降落":"jiàng luò","明朗":"míng lǎng","晴朗":"qíng lǎng","水晶":"shuǐ jīng","晶体":"jīng tǐ","亮晶晶":"liàng jīng jīng","珍珠":"zhēn zhū","珠子":"zhū zǐ","眼珠":"yǎn zhū","粘贴":"nián tiē","粘住":"nián zhù","粘连":"nián lián","脚印":"jiǎo yìn","印刷":"yìn shuā","印象":"yìn xiàng","方案":"fāng àn","图案":"tú àn","案子":"àn zǐ","展开":"zhǎn kāi","展览":"zhǎn lǎn","发展":"fā zhǎn","列车":"liè chē","排列":"pái liè","行列":"háng liè","规定":"guī dìng","规则":"guī zé","圆规":"yuán guī","原则":"yuán zé","否则":"fǒu zé","凌乱":"líng luàn","凌晨":"líng chén","冰凌":"bīng líng","乱糟糟":"luàn zāo zāo","混乱":"hùn luàn","凉爽":"liáng shuǎng","凉快":"liáng kuai","冰凉":"bīng liáng","杏仁":"xìng rén","杏树":"xìng shù","杏黄":"xìng huáng","一枚":"yì méi","枚举":"méi jǔ","奖章枚":"jiǎng zhāng méi","邮票":"yóu piào","邮局":"yóu jú","邮件":"yóu jiàn","车票":"chē piào","发票":"fā piào","清爽":"qīng shuǎng","爽快":"shuǎng kuài","拥挤":"yōng jǐ","挤压":"jǐ yā","挤奶":"jǐ nǎi","争取":"zhēng qǔ","斗争":"dòu zhēng","战争":"zhàn zhēng","菊花":"jú huā","秋菊":"qiū jú","菊科":"jú kē","频繁":"pín fán","频率":"pín lǜ","频频":"pín pín","勾画":"gōu huà","勾销":"gōu xiāo","勾结":"gōu jié","挖掘":"wā jué","挖洞":"wā dòng","挖土":"wā tǔ","汽油":"qì yóu","油田":"yóu tián","酱油":"jiàng yóu","房屋":"fáng wū","屋子":"wū zi","屋顶":"wū dǐng","木板":"mù bǎn","黑板":"hēi bǎn","板凳":"bǎn dèng","准备":"zhǔn bèi","准确":"zhǔn què","准时":"zhǔn shí","备用":"bèi yòng","完备":"wán bèi","等待":"děng dài","等于":"děng yú","平等":"píng děng","暴雨":"bào yǔ","暴力":"bào lì","暴露":"bào lù","哦哟":"ò yō","吟哦":"yín é","钻进":"zuān jìn","钻研":"zuān yán","钻空子":"zuàn kòng zi","爬山":"pá shān","爬行":"pá xíng","爬树":"pá shù","漂浮":"piāo fú","漂流":"piāo liú","漂亮":"piào liang","晒太阳":"shài tài yáng","晾晒":"liàng shài","晒干":"shài gān","恒心":"héng xīn","永恒":"yǒng héng","恒定":"héng dìng","神圣":"shén shèng","圣人":"shèng rén","圣诞":"shèng dàn","萌芽":"méng yá","萌发":"méng fā","萌动":"méng dòng","妥当":"tuǒ dàng","妥帖":"tuǒ tiē","稳妥":"wěn tuǒ","车轴":"chē zhóu","轴心":"zhóu xīn","画轴":"huà zhóu","阁楼":"gé lóu","内阁":"nèi gé","亭台楼阁":"tíng tái lóu gé","培养":"péi yǎng","栽培":"zāi péi","培训":"péi xùn","厘米":"lí mǐ","厘清":"lí qīng","毫厘":"háo lí","葫芦":"hú lu","葫芦藤":"hú lu téng","芦苇":"lú wěi","芦花":"lú huā","错误":"cuò wù","不错":"bú cuò","错觉":"cuò jué","普通":"pǔ tōng","普遍":"pǔ biàn","普查":"pǔ chá","宫殿":"gōng diàn","皇宫":"huáng gōng","天宫":"tiān gōng","肯定":"kěn dìng","肯干":"kěn gān","中肯":"zhòng kěn","冒险":"mào xiǎn","冒失":"mào shi","感冒":"gǎn mào","公式":"gōng shì","样式":"yàng shì","正式":"zhèng shì","可怜":"kě lián","怜悯":"lián mǐn","怜惜":"lián xī","旅行":"lǚ xíng","旅客":"lǚ kè","旅游":"lǚ yóu","另外":"lìng wài","另想":"lìng xiǎng","另类":"lìng lèi","眼睛":"yǎn jīng","画龙点睛":"huà lóng diǎn jīng","目不转睛":"mù bù zhuǎn jīng","及时":"jí shí","以及":"yǐ jí","来得及":"lái de jí","卷起":"juǎn qǐ","花卷":"huā juǎn","风卷":"fēng juàn","救命":"jiù mìng","挽救":"wǎn jiù","救护":"jiù hù","生命":"shēng mìng","命运":"mìng yùn","命令":"mìng lìng","尾巴":"wěi ba","结尾":"jié wěi","末尾":"mò wěi","牙齿":"yá chǐ","齿轮":"chǐ lún","口齿":"kǒu chǐ","胃口":"wèi kǒu","肠胃":"cháng wèi","胃病":"wèi bìng","管理":"guǎn lǐ","水管":"shuǐ guǎn","不管":"bù guǎn","刚才":"gāng cái","刚好":"gāng hǎo","刚强":"gāng qiáng","咬人":"yǎo rén","咬牙":"yǎo yá","咬一口":"yǎo yì kǒu","申请":"shēn qǐng","申明":"shēn míng","申述":"shēn shù","介绍":"jiè shào","介意":"jiè yì","媒介":"méi jiè","绍兴":"shào xīng","祖宗":"zǔ zōng","宗旨":"zōng zhǐ","宗族":"zōng zú","主旨":"zhǔ zhǐ","旨在":"zhǐ zài","占据":"zhàn jù","占领":"zhàn lǐng","占有":"zhàn yǒu","缺乏":"quē fá","乏力":"fá lì","贫乏":"pín fá","搭船":"dā chuán","搭配":"dā pèi","搭理":"dā lǐ","亲人":"qīn rén","亲密":"qīn mì","亲自":"qīn zì","祖父":"zǔ fù","祖国":"zǔ guó","祖先":"zǔ xiān","披着":"pī zhe","披露":"pī lù","披风":"pī fēng","摇晃":"yáo huàng","摇头":"yáo tóu","动摇":"dòng yáo","停止":"tíng zhǐ","停留":"tíng liú","停车场":"tíng chē chǎng","羽毛":"yǔ máo","羽翼":"yǔ yì","羽毛球":"yǔ máo qiú","翠鸟":"cuì niǎo","翠绿":"cuì lǜ","青翠":"qīng cuì","蓝色":"lán sè","天蓝":"tiān lán","蓝天":"lán tiān","安静":"ān jìng","平静":"píng jìng","静悄悄":"jìng qiāo qiāo","悄悄":"qiāo qiāo","吞下":"tūn xià","吞食":"tūn shí","吞吞吐吐":"tūn tūn tǔ tǔ","捕捉":"bǔ zhuō","捕获":"bǔ huò","捕鱼":"bǔ yú","蒲公英":"pú gōng yīng","香蒲":"xiāng pú","英雄":"yīng xióng","英明":"yīng míng","精英":"jīng yīng","盛开":"shèng kāi","盛大":"shèng dà","茂盛":"mào shèng","玩耍":"wán shuǎ","耍弄":"shuǎ nòng","杂耍":"zá shuǎ","使用":"shǐ yòng","使唤":"shǐ huàn","大使":"dà shǐ","使劲":"shǐ jìn","劲头":"jìn tóu","使劲儿":"shǐ jìn ér","脸色":"liǎn sè","洗脸":"xǐ liǎn","笑脸":"xiào liǎn","哈欠":"hā qian","欠债":"qiàn zhài","欠缺":"qiàn quē","朝阳":"cháo yáng","朝霞":"zhāo xiá","朝夕":"zhāo xī","钓鱼":"diào yú","垂钓":"chuí diào","钓竿":"diào gān","观察":"guān chá","考察":"kǎo chá","警察":"jǐng chá","合拢":"hé lǒng","靠拢":"kào lǒng","拉拢":"lā lǒng","喜欢":"xǐ huan","欢喜":"huān xǐ","喜事":"xǐ shì","风景":"fēng jǐng","景色":"jǐng sè","情景":"qíng jǐng","优秀":"yōu xiù","优美":"yōu měi","优惠":"yōu huì","淡水":"dàn shuǐ","淡雅":"dàn yǎ","平淡":"píng dàn","浅显":"qiǎn xiǎn","浅海":"qiǎn hǎi","到底":"dào dǐ","海底":"hǎi dǐ","底下":"dǐ xià","岩石":"yán shí","岩层":"yán céng","岩洞":"yán dòng","梅花鹿":"méi huā lù","鹿角":"lù jiǎo","驯鹿":"xùn lù","划船":"huá chuán","划水":"huà shuǐ","划算":"huá suàn","布料":"bù liào","宣布":"xuān bù","布置":"bù zhì","茂密":"mào mì","繁茂":"fán mào","密切":"mì qiè","秘密":"mì mì","厚薄":"hòu báo","厚道":"hòu dào","深厚":"shēn hòu","材料":"cái liào","资料":"zī liào","肥料":"féi liào","海滨":"hǎi bīn","湖滨":"hú bīn","滨海":"bīn hǎi","棕色":"zōng sè","棕树":"zōng shù","棕熊":"zōng xióng","帆船":"fān chuán","风帆":"fēng fān","扬帆":"yáng fān","灰色":"huī sè","灰尘":"huī chén","灰心":"huī xīn","跟前":"gēn qián","跟随":"gēn suí","脚跟":"jiǎo gēn","渔船":"yú chuán","渔民":"yú mín","渔业":"yú yè","贝壳":"bèi ké","蛋壳":"dàn ké","外壳":"wài ké","理睬":"lǐ cǎi","睬也不睬":"cǎi yě bù cǎi","亚洲":"yà zhōu","亚军":"yà jūn","亚热带":"yà rè dài","透明":"tòu míng","透气":"tòu qì","看透":"kàn tòu","除了":"chú le","清除":"qīng chú","排除":"pái chú","踩踏":"cǎi tà","踩水":"cǎi shuǐ","踩点":"cǎi diǎn","抽空":"chōu kōng","抽查":"chōu chá","抽穗":"chōu suì","封闭":"fēng bì","信封":"xìn fēng","封住":"fēng zhù","严格":"yán gé","严厉":"yán lì","严实":"yán shí","挡住":"dǎng zhù","挡路":"dǎng lù","阻挡":"zǔ dǎng","花坛":"huā tán","讲坛":"jiǎng tán","论坛":"lùn tán","明显":"míng xiǎn","显然":"xiǎn rán","显示":"xiǎn shì","苍翠":"cāng cuì","苍白":"cāng bái","苍天":"cāng tiān","药材":"yào cái","药品":"yào pǐn","药店":"yào diàn","木材":"mù cái","教材":"jiào cái","柔软":"róu ruǎn","软件":"ruǎn jiàn","软和":"ruǎn huo","刮风":"guā fēng","刮脸":"guā liǎn","刮目":"guā mù","捉迷藏":"zhuō mí cáng","捉拿":"zhuō ná","返回":"fǎn huí","往返":"wǎng fǎn","返还":"fǎn huán","盼望":"pàn wàng","望见":"wàng jiàn","希望":"xī wàng","断开":"duàn kāi","判断":"pàn duàn","不断":"bú duàn","清楚":"qīng chǔ","苦楚":"kǔ chǔ","楚国":"chǔ guó","甚至":"shèn zhì","至少":"zhì shǎo","至多":"zhì duō","河岸":"hé àn","上岸":"shàng àn","两岸":"liǎng àn","孤单":"gū dān","孤独":"gū dú","孤立":"gū lì","饮水":"yǐn shuǐ","饮食":"yǐn shí","冷饮":"lěng yǐn","不亦乐乎":"bú yì lè hū","亦然":"yì rán","欲望":"yù wàng","食欲":"shí yù","欲言":"yù yán","涂抹":"tú mǒ","抹去":"mǒ qù","抹黑":"mǒ hēi","适宜":"shì yí","便宜":"pián yi","宜人":"yí rén","美妙":"měi miào","奇妙":"qí miào","妙计":"miào jì","演奏":"yǎn zòu","奏乐":"zòu yuè","节奏":"jié zòu","钢琴":"gāng qín","琴声":"qín shēng","口琴":"kǒu qín","温柔":"wēn róu","柔和":"róu hé","感受":"gǎn shòu","感谢":"gǎn xiè","感动":"gǎn dòng","充满":"chōng mǎn","充实":"chōng shí","充足":"chōng zú","威力":"wēi lì","威风":"wēi fēng","威武":"wēi wǔ","仪器":"yí qì","机器":"jī qì","器官":"qì guān","汇合":"huì hé","汇报":"huì bào","词汇":"cí huì","鸣叫":"míng jiào","共鸣":"gòng míng","鸟鸣":"niǎo míng","池塘":"chí táng","澡塘":"zǎo táng","塘堰":"táng yàn","虾米":"xiā mǐ","对虾":"duì xiā","龙虾":"lóng xiā","昆虫":"kūn chóng","昆明":"kūn míng","不仅":"bù jǐn","仅仅":"jǐn jǐn","仅有":"jǐn yǒu","顺序":"shùn xù","秩序":"zhì xù","序言":"xù yán","光荣":"guāng róng","荣誉":"róng yù","繁荣":"fán róng","枯萎":"kū wěi","枯树":"kū shù","干枯":"gān kū","姿势":"zī shì","姿态":"zī tài","丰姿":"fēng zī","态度":"tài dù","形态":"xíng tài","状态":"zhuàng tài","刺刀":"cì dāo","刺激":"cì jī","刺绣":"cì xiù","梨树":"lí shù","鸭梨":"yā lí","梨花":"lí huā","部分":"bù fen","部队":"bù duì","部长":"bù zhǎng","奥秘":"ào mì","奥运会":"ào yùn huì","深奥":"shēn ào","神秘":"shén mì","秘书":"mì shū","螺丝":"luó sī","海螺":"hǎi luó","螺旋":"luó xuán","螃蟹":"páng xiè","蟹黄":"xiè huáng","鲤鱼":"lǐ yú","鲤跃":"lǐ yuè","鲫鱼":"jì yú","鲨鱼":"shā yú","沙鱼":"shā yú","司机":"sī jī","司仪":"sī yí","上司":"shàng sī","登记":"dēng jì","登山":"dēng shān","登报":"dēng bào","跌倒":"diē dǎo","跌落":"diē luò","跌跤":"diē jiāo","皆大欢喜":"jiē dà huān xǐ","人人皆知":"rén rén jiē zhī","放弃":"fàng qì","抛弃":"pāo qì","弃权":"qì quán","坚持":"jiān chí","持有":"chí yǒu","保持":"bǎo chí","打击":"dǎ jī","攻击":"gōng jī","冲击":"chōng jī","想念":"xiǎng niàn","念头":"niàn tou","纪念":"jì niàn","差不多":"chà bù duō","成绩差":"chéng jì chà","差事":"chāi shì","考试":"kǎo shì","思考":"sī kǎo","考查":"kǎo chá","试验":"shì yàn","试试":"shì shì","平均":"píng jūn","均匀":"jūn yún","均衡":"jūn héng","后退":"hòu tuì","退学":"tuì xué","撤退":"chè tuì","努力":"nǔ lì","努嘴":"nǔ zuǐ","简单":"jiǎn dān","单词":"dān cí","单位":"dān wèi","留下":"liú xià","留学":"liú xué","温度":"wēn dù","程度":"chéng dù","度日":"dù rì","奋斗":"fèn dòu","兴奋":"xīng fèn","奋勇":"fèn yǒng","木棒":"mù bàng","棒球":"bàng qiú","很棒":"hěn bàng","受伤":"shòu shāng","伤口":"shāng kǒu","伤害":"shāng hài","陆地":"lù dì","大陆":"dà lù","陆军":"lù jūn","血压":"xuè yā","鲜血":"xiān xuè","血液":"xuè yè","取得":"qǔ dé","取消":"qǔ xiāo","取暖":"qǔ nuǎn","盘子":"pán zi","盘旋":"pán xuán","算盘":"suàn pán","匆忙":"cōng máng","匆匆":"cōng cōng","匆促":"cōng cù","医生":"yī shēng","医院":"yī yuàn","医学":"yī xué","迅速":"xùn sù","迅猛":"xùn měng","迅急":"xùn jí","速度":"sù dù","加速":"jiā sù","争夺":"zhēng duó","夺目":"duó mù","剥夺":"bāo duó","秒针":"miǎo zhēn","分秒":"fēn miǎo","争分夺秒":"zhēng fēn duó miǎo","睁眼":"zhēng yǎn","睁开":"zhēng kāi","眨眼":"zhǎ yǎn","眨巴":"zhǎ bā","瞪眼":"dèng yǎn","目瞪口呆":"mù dèng kǒu dāi","瞅见":"chǒu jiàn","瞅一眼":"chǒu yì yǎn","怒气":"nù qì","发怒":"fā nù","怒火":"nù huǒ","眼眶":"yǎn kuàng","热泪盈眶":"rè lèi yíng kuàng","呆呆":"dāi dāi","发呆":"fā dāi","呆住":"dāi zhù","目睹":"mù dǔ","先睹为快":"xiān dǔ wéi kuài"};
+
+function toneBase(py) {
+  return String(py || "")
+    .toLowerCase()
+    .replace(/[āáǎà]/g, "a")
+    .replace(/[ēéěè]/g, "e")
+    .replace(/[īíǐì]/g, "i")
+    .replace(/[ōóǒò]/g, "o")
+    .replace(/[ūúǔùǖǘǚǜü]/g, "u")
+    .replace(/[^a-zu]/g, "");
+}
+
+function wordPinyinText(word, item) {
+  if (word && WORD_PINYIN[word]) return WORD_PINYIN[word];
+  return Array.from(word || "")
+    .map((ch) => {
+      if (item && ch === item.char) return item.pinyin;
+      const hit = ALL.find((c) => c.char === ch);
+      return hit ? hit.pinyin : "";
+    })
+    .filter(Boolean)
+    .join(" ");
+}
+
+function maskQuizWord(word, ch) {
+  return Array.from(word || "")
+    .map((c) => (c === ch ? "（ ）" : c))
+    .join("");
+}
+
+function quizWordOf(item) {
+  const words = (item.words || []).filter((w) => w && w.includes(item.char));
+  const pool = words.length ? words : item.words || [];
+  if (!pool.length) return item.char;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function uniqueChars(list, ban) {
+  const used = new Set([ban]);
+  const out = [];
+  for (const ch of list) {
+    const s = String(ch || "");
+    if ([...s].length !== 1 || used.has(s)) continue;
+    used.add(s);
+    out.push(s);
+  }
+  return out;
+}
+
+function pickCharDistractors(item, n) {
+  const answer = item.char;
+  const entry = ALL.find((c) => c.char === answer);
+  const similar = entry?.similar || [];
+  const mutual = ALL.filter((c) => (c.similar || []).includes(answer)).map((c) => c.char);
+  const py = entry?.pinyin || "";
+  const base = toneBase(py);
+  const sameTone = ALL.filter((c) => c.pinyin && c.pinyin === py).map((c) => c.char);
+  const near = base ? ALL.filter((c) => toneBase(c.pinyin) === base).map((c) => c.char) : [];
+  const randoms = shuffle(ALL.map((c) => c.char));
+  return uniqueChars([...similar, ...mutual, ...sameTone, ...near, ...randoms], answer).slice(0, n);
+}
+
+function renderQuizSpeak(word, py) {
+  return `<div class="pinyin-row">
+      <div class="pinyin-xl quiz-py">${escapeHtml(py || "")}</div>
+      <button class="pinyin-speak" type="button" data-act="speak" data-text="${escapeHtml(word)}" aria-label="朗读词语">${speakerIcon()}</button>
+    </div>`;
+}
+
 function renderWordsQuiz(item) {
   const opts = session.choices || [];
+  const word = session.quizWord || quizWordOf(item);
+  const py = session.quizPinyin || wordPinyinText(word, item);
+  const shown = session.revealed ? word : maskQuizWord(word, item.char);
   return `
     <p class="h-sub">${session.title}</p>
-    <div class="char-xl">${item.char}</div>
-    <div class="pinyin-xl" style="font-size:22px">${item.pinyin}</div>
-    <p class="h-sub">哪一个是这个字的组词？</p>
-    <div class="choices">
+    ${renderQuizSpeak(word, py)}
+    <div class="quiz-blank">${escapeHtml(shown)}</div>
+    <p class="h-sub">选出括号里的字</p>
+    <div class="choices choice-chars">
       ${opts
         .map(
           (o, idx) =>
-            `<button class="choice ${o.cls || ""}" data-act="choose" data-i="${idx}" ${session.revealed ? "disabled" : ""}>${o.text}</button>`
+            `<button class="choice ${o.cls || ""}" data-act="choose" data-i="${idx}" ${session.revealed ? "disabled" : ""}>${escapeHtml(o.text)}</button>`
         )
         .join("")}
     </div>
-    ${
-      session.revealed
-        ? `<div class="actions">
-            <button class="cta green" data-act="next">下一题</button>
-          </div>`
-        : ""
-    }
+    ${session.revealed ? `<div class="actions"><button class="cta green" data-act="next">下一题</button></div>` : ""}
   `;
 }
 
 function renderSimilarQuiz(item) {
   const opts = session.choices || [];
-  const prompt = session.prompt || "";
+  const word = session.quizWord || quizWordOf(item);
+  const py = session.quizPinyin || wordPinyinText(word, item);
+  const shown = session.revealed ? word : maskQuizWord(word, item.char);
   return `
     <p class="h-sub">${session.title}</p>
-    <div class="pinyin-xl" style="font-size:28px;margin-top:12px">${prompt}</div>
+    ${renderQuizSpeak(word, py)}
+    <div class="quiz-blank">「${escapeHtml(shown)}」</div>
     <p class="h-sub">请选出正确的字</p>
     <div class="choices choice-chars">
       ${opts
         .map(
           (o, idx) =>
-            `<button class="choice ${o.cls || ""}" data-act="choose" data-i="${idx}" ${session.revealed ? "disabled" : ""}>${o.text}</button>`
+            `<button class="choice ${o.cls || ""}" data-act="choose" data-i="${idx}" ${session.revealed ? "disabled" : ""}>${escapeHtml(o.text)}</button>`
         )
         .join("")}
     </div>
-    ${session.revealed ? `<p class="h-sub" style="margin-top:12px">${item.char}（${item.pinyin}）${item.words.join("、")}</p><div class="actions"><button class="cta green" data-act="next">下一题</button></div>` : ""}
+    ${session.revealed ? `<div class="actions"><button class="cta green" data-act="next">下一题</button></div>` : ""}
   `;
+}
+
+function prepareChoices(item) {
+  const word = quizWordOf(item);
+  session.quizWord = word;
+  session.quizPinyin = wordPinyinText(word, item);
+  if (session.mode === "words") {
+    const distract = pickCharDistractors(item, 3);
+    session.choices = shuffle([{ text: item.char, ok: true }, ...distract.map((t) => ({ text: t, ok: false }))]);
+  } else if (session.mode === "similar") {
+    const similars = (item.similar || []).filter((s) => s && s !== item.char);
+    const extra = similars.length ? similars.slice(0, 3) : [pickSimilarFallback(item.char)];
+    session.choices = shuffle([{ text: item.char, ok: true }, ...extra.map((t) => ({ text: t, ok: false }))]);
+  }
 }
 
 function renderResult() {
@@ -1072,25 +1162,6 @@ function renderResult() {
       ${session.moreLeft ? `<button class="cta cta-full ghost" data-act="more-group" style="margin-top:12px">再练一组（还剩 ${session.moreLeft} 个）</button>` : ""}
     </div>
   `;
-}
-
-function prepareChoices(item) {
-  if (session.mode === "words") {
-    const correct = item.words[0];
-    const pool = ALL.filter((c) => c.char !== item.char)
-      .flatMap((c) => c.words)
-      .filter((w) => w !== correct && !item.words.includes(w));
-    const distract = shuffle(pool).slice(0, 3);
-    session.choices = shuffle([{ text: correct, ok: true }, ...distract.map((t) => ({ text: t, ok: false }))]);
-  } else if (session.mode === "similar") {
-    const word = item.words[0] || item.char;
-    const other = (item.similar && item.similar[0]) || pickSimilarFallback(item.char);
-    session.prompt = `「${word}」里的字是？`;
-    session.choices = shuffle([
-      { text: item.char, ok: true },
-      { text: other, ok: false },
-    ]);
-  }
 }
 
 function pickSimilarFallback(ch) {
@@ -2372,7 +2443,7 @@ function startTrain(mode) {
   }
   if (mode === "words") {
     list = shuffle(selected.filter((c) => c.words && c.words.length)).slice(0, 8);
-    title = "组词选择";
+    title = "选字填空";
     startSession("words", list, title);
     return;
   }

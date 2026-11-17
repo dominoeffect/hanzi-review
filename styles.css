@@ -416,11 +416,11 @@ input, textarea { font-family: inherit; }
 }
 .train-card:active { transform: scale(0.97); }
 .train-ico {
-  width: 44px; height: 44px;
-  border-radius: 14px;
-  display: grid; place-items: center;
-  font-size: 22px;
-  color: #fff;
+  width: 56px;
+  height: auto;
+  display: block;
+  background: none;
+  border-radius: 0;
 }
 .train-card b { font-size: 16px; }
 .train-card span { font-size: 12px; color: var(--muted); line-height: 1.4; }
@@ -554,6 +554,16 @@ input, textarea { font-family: inherit; }
   line-height: 1;
   color: #1e3a6e;
 }
+.quiz-blank {
+  font-family: var(--kai);
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #1e3a6e;
+  margin: 6px 0 4px;
+  line-height: 1.35;
+}
+.quiz-py { font-size: 26px; }
 .similar-hint {
   margin: 8px auto 0;
   font-size: 13px;
